@@ -12,7 +12,7 @@ module.exports = {
 			statements: 80,
 		},
 	},
-	roots: ['<rootDir>packages/', '<rootDir>services/'],
+	roots: ['<rootDir>/'],
 	coveragePathIgnorePatterns: ['<rootDir>dist/'],
 	setupFiles: ['./jest-setup.ts'],
 };
