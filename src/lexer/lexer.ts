@@ -1,25 +1,46 @@
 import { Token, TokenType } from './token';
 
 export class Lexer {
+	/**
+	 * Current index in the input string
+	 */
 	private index = 0;
+	/**
+	 * Index of where the current lexeme starts
+	 */
 	private currentLexemeStart = 0;
+	/**
+	 * Current line number
+	 */
 	private line = 1;
 
 	public constructor(private readonly input: string) {}
 
+	/**
+	 * Input length of this Lexer instance
+	 */
 	public get length(): number {
 		return this.input.length;
 	}
 
+	/**
+	 * Whether the current index is at the end of the input string
+	 */
 	private get isAtEnd(): boolean {
 		return this.index + 1 > this.length;
 	}
 
+	/**
+	 * Creates a new Token instance with the current state
+	 */
 	private makeToken(type: TokenType): Token {
 		const lexeme = type === TokenType.EOF ? 'EOF' : this.input.slice(this.currentLexemeStart, this.index);
 		return new Token(type, lexeme, this.line);
 	}
 
+	/**
+	 * Consumes the next token in the input - will throw if there's none left
+	 */
 	private advance(): string {
 		/* istanbul ignore next */
 		if (this.isAtEnd) {
@@ -29,14 +50,23 @@ export class Lexer {
 		return this.input[this.index++]!;
 	}
 
+	/**
+	 * Returns the next token in the input without consuming it
+	 */
 	private peek(): string | undefined {
 		return this.input[this.index];
 	}
 
+	/**
+	 * Returns the previous token in the input
+	 */
 	private peekBack() {
 		return this.input[this.index - 1];
 	}
 
+	/**
+	 * Expects the next tokens in the input to be `characters`, consuming them - will throw if they do not match
+	 */
 	private consume(type: TokenType, characters: string): Token {
 		for (const character of characters) {
 			if (this.peek() === character) {
@@ -51,6 +81,9 @@ export class Lexer {
 		return this.makeToken(type);
 	}
 
+	/**
+	 * Checks if the given character is a digit - returns true if there is no character
+	 */
 	private isDigit(character?: string) {
 		if (!character) {
 			return true;
@@ -59,6 +92,9 @@ export class Lexer {
 		return !isNaN(parseInt(character, 10));
 	}
 
+	/**
+	 * Lexes a single token
+	 */
 	private lexToken(): Token | undefined {
 		this.currentLexemeStart = this.index;
 
@@ -147,6 +183,9 @@ export class Lexer {
 		}
 	}
 
+	/**
+	 * Lexes all tokens in the input
+	 */
 	public lex(): Token[] {
 		const tokens: Token[] = [];
 
