@@ -1,12 +1,4 @@
-// note: unsure if I wanna handle this via files yet
-
-// import { readFileSync } from 'node:fs';
-// import { join } from 'node:path';
-
-// const validJson = readFileSync(join(process.cwd(), 'test_resources', 'lexer', 'valid.json'), 'utf8');
-
-import { Lexer } from '../lexer';
-import { TokenType } from '../token';
+import { Lexer, TokenType } from '../lexer';
 
 describe('random single tokens', () => {
 	test('comma', () => {
@@ -50,12 +42,20 @@ describe('simple values', () => {
 			expect(lexed.lexeme).toBe('"abc"');
 		});
 
-		test('valid string with escapes', () => {
+		test('valid string with quote escape', () => {
 			const lexer = new Lexer('"ab\\"c"');
 
 			const [lexed] = lexer.lex();
 			expect(lexed.type).toBe(TokenType.String);
 			expect(lexed.lexeme).toBe('"ab\\"c"');
+		});
+
+		test('valid string with an escape before termination', () => {
+			const lexer = new Lexer('"simpler non-flash version\\\\"');
+
+			const [lexed] = lexer.lex();
+			expect(lexed.type).toBe(TokenType.String);
+			expect(lexed.lexeme).toBe('"simpler non-flash version\\\\"');
 		});
 	});
 
